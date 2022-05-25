@@ -3,13 +3,13 @@ import styles from './card.module.css'
 class Video extends Component {
 
     setClickListen = (item) => {
-        console.log(this.props.item);
+        console.log("4. 비디오클릭");
        this.props.showVideo(item,this.props.item.id,this.props.item.snippet.channelId,true);
        
     }
     render() { 
         const displayType = this.props.display === 'list' ? styles.list : styles.grid;
-
+        console.log("3. 비디오뿌려주기");
         return (
                 <li className={`${styles.video} ${displayType}`} onClick={this.setClickListen}>
                     <div className={styles.card_video}>

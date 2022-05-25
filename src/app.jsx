@@ -16,6 +16,7 @@ class App extends Component {
       channelId : '0',
       itemss: [],
       click: false,
+      compo: false,
       detailItem : [],
     };
   }
@@ -25,7 +26,9 @@ class App extends Component {
 // 내가 할일은 video가 클릭했을때 보낸 item과 데이터들이, json 형식으로 맞게 channlId를 얻었는지 확인,
 // 두번째는 그 item을 showVideo로 검색하는데 잘쓰고, 그것에 대한 반환결과를 아래 return 에 맞는 state id 를 사용했는지. 
   //처음에 보여지는 인기차트 
+  
   componentDidMount() {
+    console.log("1. 인기차트 보여주기");
     fetch("https://www.googleapis.com/youtube/v3/videos?key=AIzaSyCLyt5QUm5cWIxi2lQZTZ5YjfrmJviMPqI&part=snippet&chart=mostPopular&maxResults=25")
       .then(res => res.json())
       .then(
@@ -42,18 +45,19 @@ class App extends Component {
           });
         }
       )
-      console.log(this.state.items);
+     
   }
   showVideo = (item,id,channelId,click) => {
     fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&id=${channelId}&key=AIzaSyCLyt5QUm5cWIxi2lQZTZ5YjfrmJviMPqI`)
     .then(res => res.json())
     .then(
       (result) => {
-        console.log(result.items);
-        console.log(this.state.id);
+        
+    console.log("6. showvideo json req날리기");
         this.setState({
           isLoaded: true,
           itemss: result.items,
+          compo: true,
         });
       },(error) => {
         this.setState({
@@ -63,7 +67,6 @@ class App extends Component {
       }
     )
     item && this.setState({detailItem : item, id , channelId:channelId, click });
-    console.log(this.state.itemss);
   }
   // 검색 JSON -> 유튜브 API 
   inputFiled = (text) => {
@@ -103,17 +106,15 @@ class App extends Component {
     let showVideoVar;
     if(this.state.item === undefined) {return}
       const video = this.state.items.filter(item => item.id === this.state.id);
-      console.log(video);
-      console.log(this.state.itemss);
       const subscriber = this.state.itemss.filter(item => item.id === this.state.channelId);
-      console.log(subscriber);
+     
 
     const { error, isLoaded, items, detailItem } = this.state;
     return (
       <div className={styles.app}>
         <InputFiled query={this.inputFiled} />
         <section className={styles.content}>
-          {this.state.click && <Videodetail videoId={this.state.id} video={video} subscriber={subscriber}/>}
+          {this.state.compo && <Videodetail videoId={this.state.id} video={video} subscriber={subscriber}/>}
           <div className={styles.list}>
           <VideoList items={items} showVideo={this.showVideo}
           display={this.state.item ? 'list' : 'grid' }/>

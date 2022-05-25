@@ -7,11 +7,12 @@ class VideoList extends Component {
  
   showVideo = (item,id,channelId,click) => 
   {
+    console.log("5. 비디오리스트에서클릭넘겨주기");
     this.props.showVideo(item,id,channelId,click);
    };
 
   render() {
-
+    console.log("2. 비디오리스트");    
     return (
       <ul className={styles.video_list}>
         
