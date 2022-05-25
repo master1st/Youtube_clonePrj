@@ -3,6 +3,7 @@ import styles from './card.module.css'
 class Video extends Component {
 
     setClickListen = (item) => {
+        console.log(this.props.item);
        this.props.showVideo(item,this.props.item.id,this.props.item.snippet.channelId,true);
        
     }

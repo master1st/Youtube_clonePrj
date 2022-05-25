@@ -15,30 +15,16 @@ class App extends Component {
       id : '0' , item : false,
       channelId : '0',
       itemss: [],
+      click: false,
+      detailItem : [],
     };
   }
-
-  showVideo = (item,id,channelId) => {
-    fetch(`https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&id=${channelId}&key=AIzaSyCLyt5QUm5cWIxi2lQZTZ5YjfrmJviMPqI`)
-    .then(res => res.json())
-    .then(
-      (result) => {
-        this.setState({
-          isLoaded: true,
-          itemss: result.items,
-        });
-      },
-      (error) => {
-        this.setState({
-          isLoaded: true,
-          error
-        });
-      }
-    )
-    item && this.setState({id : id , item:true , channelId:channelId});
-   
-  }
-  
+// showVideo -> 검색한것이 보여지는 detail view  
+// 에러나는 것은 Snippet , component DidUnMount되었을때, 즉 컴포넌트가 아직 View에 Rendering 되지않았을때, 아무래도 화면에 관한 UI 로직을 불러와서 문제가 되는 것
+// 로직은 search 랑 똑같다. 검색하고나서, submit 폼을 보냈을때, 상위 App 컴포넌트에서 하위컴포넌트로 받은 값을 토대로 req를 날리는 것은 똑같다. 
+// 내가 할일은 video가 클릭했을때 보낸 item과 데이터들이, json 형식으로 맞게 channlId를 얻었는지 확인,
+// 두번째는 그 item을 showVideo로 검색하는데 잘쓰고, 그것에 대한 반환결과를 아래 return 에 맞는 state id 를 사용했는지. 
+  //처음에 보여지는 인기차트 
   componentDidMount() {
     fetch("https://www.googleapis.com/youtube/v3/videos?key=AIzaSyCLyt5QUm5cWIxi2lQZTZ5YjfrmJviMPqI&part=snippet&chart=mostPopular&maxResults=25")
       .then(res => res.json())
@@ -56,7 +42,30 @@ class App extends Component {
           });
         }
       )
+      console.log(this.state.items);
   }
+  showVideo = (item,id,channelId,click) => {
+    fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&id=${channelId}&key=AIzaSyCLyt5QUm5cWIxi2lQZTZ5YjfrmJviMPqI`)
+    .then(res => res.json())
+    .then(
+      (result) => {
+        console.log(result.items);
+        console.log(this.state.id);
+        this.setState({
+          isLoaded: true,
+          itemss: result.items,
+        });
+      },(error) => {
+        this.setState({
+          isLoaded: true,
+          error
+        });
+      }
+    )
+    item && this.setState({detailItem : item, id , channelId:channelId, click });
+    console.log(this.state.itemss);
+  }
+  // 검색 JSON -> 유튜브 API 
   inputFiled = (text) => {
     fetch(`https://www.googleapis.com/youtube/v3/search?key=AIzaSyCLyt5QUm5cWIxi2lQZTZ5YjfrmJviMPqI&part=snippet&maxResults=25&type=video&q=${text}`)
       .then(res => res.json())
@@ -92,19 +101,19 @@ class App extends Component {
 
   render() {
     let showVideoVar;
-    if (this.state.item && this.state.id){
-      const video = this.state.items.filter(item => item.id === this.state.id)
-        showVideoVar = <Videodetail videoId={this.state.id} video={video} channel={this.state.itemss} />
-    }
-    
-    const { error, isLoaded, items } = this.state;
+    if(this.state.item === undefined) {return}
+      const video = this.state.items.filter(item => item.id === this.state.id);
+      console.log(video);
+      console.log(this.state.itemss);
+      const subscriber = this.state.itemss.filter(item => item.id === this.state.channelId);
+      console.log(subscriber);
+
+    const { error, isLoaded, items, detailItem } = this.state;
     return (
       <div className={styles.app}>
         <InputFiled query={this.inputFiled} />
         <section className={styles.content}>
-          {this.state.item && <div className={styles.detail}>
-            {showVideoVar}
-          </div>}
+          {this.state.click && <Videodetail videoId={this.state.id} video={video} subscriber={subscriber}/>}
           <div className={styles.list}>
           <VideoList items={items} showVideo={this.showVideo}
           display={this.state.item ? 'list' : 'grid' }/>
