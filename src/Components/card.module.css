@@ -1,3 +1,9 @@
+*{
+    margin-left:5px;
+}
+.videomove{
+    margin:0px;
+}
 .video {
     width:50%;
     padding: 0.2em;
@@ -109,5 +115,36 @@
 }
 
 .text{
+    color:aliceblue;
+}
+
+.viewCount{
+    color:aliceblue;
+}
+
+.img{
+    border-radius: 75%;
+    width:60px;
+    height:60px;
+}
+.profile_container{
+    display:flex;
+}
+
+.profile_item1{
+    margin-right: 15px;
+}
+
+.subscriber{
+    color:gray;
+    margin:0px;
+    font-size: 13px;
+}
+.subscriberTitle{
+    color:aliceblue;
+    margin:0px;
+}
+
+.description{
     color:aliceblue;
 }

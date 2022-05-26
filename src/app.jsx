@@ -78,6 +78,7 @@ class App extends Component {
       .then(items =>
         this.setState({
           items: items,
+          compo: false,
         }))
   }
   // componentWillUnmount() {
@@ -124,6 +125,8 @@ class App extends Component {
     );
   }
 }
+//1. videos  -> channel 
+//2. search -> videos -> channel 이부분이 오류,   
 
 
 export default App;
